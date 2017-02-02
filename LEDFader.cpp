@@ -24,6 +24,11 @@ LEDFader::LEDFader(uint8_t pwm_pin) {
   curve = (curve_function)0;
 }
 
+void LEDFader::kill() {
+  stop_fade();
+  set_value(0);
+}
+
 void LEDFader::set_pin(uint8_t pwm_pin) {
   pin = pwm_pin;
 }
