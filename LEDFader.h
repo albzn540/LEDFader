@@ -38,6 +38,8 @@ private:
     // Create a new LED Fader for a pin
     LEDFader(uint8_t pwm_pin=0);
 
+    void kill();
+
     // Set the PWM pin that the LED is connected to
     void set_pin(uint8_t pwm_pin);
     uint8_t get_pin();
