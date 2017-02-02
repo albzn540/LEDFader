@@ -3,6 +3,8 @@
  * Author: cameron
  *
  * Created on October 22, 2013, 1:07 AM
+ *
+ * Edited to work again by: Albin Winkelmann
  */
 
 #ifndef CURVE_H

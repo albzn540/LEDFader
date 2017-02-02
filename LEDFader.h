@@ -3,6 +3,11 @@
  *
  *  Created on: Sep 24, 2013
  *      Author: jeremy
+ *
+ *
+ *  Expanded and corrected
+ *    Author: Albin Winkelmann
+ *      Date: 12.01.2017
  */
 
 #include "Arduino.h"
