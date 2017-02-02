@@ -29,7 +29,11 @@ private:
   unsigned int interval;
   uint8_t color;
   uint8_t to_color;
+  uint8_t saved_to_color;
+  uint8_t lowerbound;
+  uint8_t brightness;
   unsigned int duration;
+  unsigned int saved_duration;
   float percent_done;
   curve_function curve;
 
@@ -39,6 +43,9 @@ private:
     LEDFader(uint8_t pwm_pin=0);
 
     void kill();
+    bool updateFade();
+    void pulse(unsigned int speed, unsigned int brightnessVal);
+    void updatePulse();
 
     // Set the PWM pin that the LED is connected to
     void set_pin(uint8_t pwm_pin);

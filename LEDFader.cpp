@@ -20,8 +20,12 @@ LEDFader::LEDFader(uint8_t pwm_pin) {
   last_step_time = 0;
   interval = 0;
   duration = 0;
+  saved_duration = 0;
+  saved_to_color = 0;
   percent_done = 0;
   curve = (curve_function)0;
+  brightness = 0;
+  lowerbound = 0;
 }
 
 void LEDFader::kill() {
@@ -32,7 +36,7 @@ void LEDFader::kill() {
 void LEDFader::set_pin(uint8_t pwm_pin) {
   pin = pwm_pin;
 }
-uint8_t LEDFader::get_pin(){
+uint8_t LEDFader::get_pin() {
   return pin;
 }
 
@@ -66,6 +70,7 @@ LEDFader::curve_function LEDFader::get_curve() {
 
 void LEDFader::change_duration(unsigned int newDuration) {
   duration = newDuration;
+  saved_duration = newDuration;
   //calculating the new interval
   float color_diff = abs(color - to_color);
   interval = round((float)duration / color_diff);
@@ -116,7 +121,9 @@ void LEDFader::fade(uint8_t value, unsigned int time) {
   }
 
   duration = time;
+  saved_duration = time;
   to_color = (uint8_t)constrain(value, 0, 255);
+  saved_to_color = to_color;
 
   // Figure out what the interval should be so that we're chaning the color by at least 1 each cycle
   // (minimum interval is MIN_INTERVAL)
@@ -187,4 +194,54 @@ bool LEDFader::update() {
   duration -= time_diff;
   last_step_time = millis();
   return true;
+}
+
+bool LEDFader::updateFade() {
+  // No pin defined
+  if (!pin) {
+    return false;
+  }
+
+  // No fade
+  if (duration == 0) {
+    return false;
+  }
+
+  update();
+
+  if(!is_fading()) {
+    if(color == to_color) {
+      fade(0, saved_duration);
+    }
+    if(color == 0) {
+      fade(saved_to_color, saved_duration);
+    }
+  }
+  return true;
+}
+
+void LEDFader::pulse(unsigned int speed, unsigned int brightnessVal) {
+  brightness = (uint8_t)constrain(brightnessVal, 0, 255);
+  lowerbound = 10;
+  duration = round(speed / 2);
+  saved_duration = duration;
+  
+  set_value(lowerbound);
+  fade(brightness, duration);
+}
+
+void LEDFader::updatePulse() {
+
+  update();
+
+  if(!is_fading()) {
+
+    if(color == lowerbound) {
+      fade(brightness, saved_duration);
+    }
+    if(color == brightness) {
+      fade(lowerbound, saved_duration);
+    }
+
+  }
 }
